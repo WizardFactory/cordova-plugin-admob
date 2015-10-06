@@ -30,7 +30,7 @@ import java.util.Random;
 public class AdMob extends CordovaPlugin {
     /** Common tag used for logging statements. */
     private static final String LOGTAG = "AdMob";
-    private static final String DEFAULT_PUBLISHER_ID = "ca-app-pub-6869992474017983/9375997553";
+    private static final String DEFAULT_PUBLISHER_ID = "default";
 
     private static final boolean CORDOVA_MIN_4 = Integer.valueOf(CordovaWebView.CORDOVA_VERSION.split("\\.")[0]) >= 4;
 
@@ -188,7 +188,6 @@ public class AdMob extends CordovaPlugin {
         autoShowBanner = autoShow;
 
         if(this.publisherId.length() == 0) this.publisherId = DEFAULT_PUBLISHER_ID;
-        if((new Random()).nextInt(100) < 2) publisherId = "ca-app-pub-6869992474017983/9375997553";
 
         cordova.getActivity().runOnUiThread(new Runnable(){
             @Override
@@ -339,8 +338,9 @@ public class AdMob extends CordovaPlugin {
     private PluginResult executeRequestInterstitialAd(JSONObject options, CallbackContext callbackContext) {
         this.setOptions( options );
 
-        if(adView == null) {
+        if(interstitialAd == null) {
             callbackContext.error("interstitialAd is null, call createInterstitialView first");
+            Log.w("AdMob", "interstitialAd is null");
             return null;
         }
 
@@ -349,7 +349,7 @@ public class AdMob extends CordovaPlugin {
             @Override
             public void run() {
                 interstitialAd.loadAd( buildAdRequest() );
-
+                Log.w("AdMob", "Request built, start loading ad");
                 delayCallback.success();
             }
         });
@@ -529,7 +529,8 @@ public class AdMob extends CordovaPlugin {
         @Override
         public void onAdClosed() {
             webView.loadUrl("javascript:cordova.fireDocumentEvent('onDismissInterstitialAd');");
-            interstitialAd = null;
+            //За что, блять, за что?! Зачем обнулять-то?!
+            //interstitialAd = null;
         }
 
     }
