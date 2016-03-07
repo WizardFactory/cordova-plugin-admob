@@ -21,7 +21,7 @@
         <clobbers target="window.plugins.AdMob" />
     </js-module>
 
-	<dependency id="google-admob-sdk"/>
+	<dependency id="cordova-admobsdk"/>
 
     <!-- android -->
     <platform name="android">
